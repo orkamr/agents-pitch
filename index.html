@@ -9,14 +9,60 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Expand buttons (shown when sidebars are collapsed) -->
+    <button class="expand-btn left" id="expandLeft" title="Expand sidebar">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+    <button class="expand-btn right" id="expandRight" title="Expand preview">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
     <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="logo">
-                <i class="fas fa-robot"></i>
-                <span>Agents</span>
+        <!-- Left Sidebar - Configuration Summary -->
+        <aside class="sidebar-left" id="sidebarLeft">
+            <button class="collapse-btn left" id="collapseLeft" title="Collapse sidebar">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <span>Agent Builder</span>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" id="settingsBtn" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
             </div>
-            <div class="header-center">
+
+            <div class="basket-section">
+                <div class="basket-header">
+                    <h3><i class="fas fa-clipboard-list"></i> Configuration Summary</h3>
+                    <button class="icon-btn small" id="resetBtn" title="Reset">
+                        <i class="fas fa-undo"></i>
+                    </button>
+                </div>
+                <div class="basket-items" id="basketItems">
+                    <p class="empty-basket">Select options to build your agent configuration</p>
+                </div>
+                <div class="basket-totals">
+                    <div class="total-row">
+                        <span>Estimated Time:</span>
+                        <span id="totalTime">0 hours</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Estimated Cost:</span>
+                        <span id="totalCost">0 DKK</span>
+                    </div>
+                    <div class="total-row complexity">
+                        <span>Complexity Level:</span>
+                        <span id="complexityLevel">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="legend-section">
+                <h4>Difficulty Levels</h4>
                 <div class="legend">
                     <div class="legend-item">
                         <span class="legend-color simple"></span>
@@ -28,300 +74,297 @@
                     </div>
                     <div class="legend-item">
                         <span class="legend-color tbd"></span>
-                        <span>To Be Decided</span>
+                        <span>TBD</span>
                     </div>
                 </div>
             </div>
-            <div class="header-actions">
-                <button class="btn-icon" id="settingsBtn" title="Cost Settings">
-                    <i class="fas fa-cog"></i>
+        </aside>
+
+        <!-- Left Resize Handle -->
+        <div class="resize-handle left" id="resizeLeft"></div>
+
+        <!-- Main Content - Configuration Pipeline -->
+        <main class="main-content" id="mainContent">
+            <!-- Zoom Controls -->
+            <div class="zoom-controls">
+                <button class="zoom-btn" id="zoomIn" title="Zoom in">
+                    <i class="fas fa-plus"></i>
                 </button>
-                <button class="btn-icon" id="resetBtn" title="Reset Selection">
-                    <i class="fas fa-redo"></i>
+                <span class="zoom-level" id="zoomLevel">100%</span>
+                <button class="zoom-btn" id="zoomOut" title="Zoom out">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button class="zoom-btn" id="zoomReset" title="Reset zoom">
+                    <i class="fas fa-compress-arrows-alt"></i>
+                </button>
+                <button class="zoom-btn" id="zoomFit" title="Fit to view">
+                    <i class="fas fa-expand"></i>
                 </button>
             </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- SVG for connection lines -->
-            <svg class="connection-lines" id="connectionLines">
-                <defs>
-                    <linearGradient id="flowGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.3" />
-                        <stop offset="50%" style="stop-color:#6366f1;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0.3" />
-                    </linearGradient>
-                    <linearGradient id="flowGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.3" />
-                        <stop offset="50%" style="stop-color:#10b981;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.3" />
-                    </linearGradient>
-                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                        <polygon points="0 0, 10 3.5, 0 7" fill="#6366f1" />
-                    </marker>
-                    <marker id="arrowhead-out" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                        <polygon points="0 0, 10 3.5, 0 7" fill="#10b981" />
-                    </marker>
-                </defs>
-            </svg>
-
-            <!-- Pipeline Flow Layout -->
-            <div class="pipeline-container">
-                <!-- Stage 1: Data Input -->
-                <div class="pipeline-stage stage-input">
-                    <div class="stage-label">
-                        <span class="stage-number">1</span>
-                        <span>Data Sources</span>
-                    </div>
-                    <div class="config-area" data-area="kb-integrations" id="area-kb-integrations">
-                        <div class="area-header">
-                            <div class="area-icon"><i class="fas fa-database"></i></div>
-                            <h3>Knowledge Base Integrations</h3>
-                            <span class="area-badge">+</span>
-                        </div>
-                        <div class="options-list">
-                            <button class="option-btn simple" data-option="sharepoint" data-level="simple">
-                                <span class="option-icon"><i class="fab fa-microsoft"></i></span>
-                                <span>Sharepoint</span>
-                            </button>
-                            <button class="option-btn simple" data-option="azure-blob" data-level="simple">
-                                <span class="option-icon"><i class="fas fa-cloud"></i></span>
-                                <span>Azure BlobStorage</span>
-                            </button>
-                            <button class="option-btn simple" data-option="upload-local" data-level="simple">
-                                <span class="option-icon"><i class="fas fa-upload"></i></span>
-                                <span>Upload from local</span>
-                            </button>
-                            <button class="option-btn advanced" data-option="custom-api" data-level="advanced">
-                                <span class="option-icon"><i class="fas fa-plug"></i></span>
-                                <span>Custom API</span>
-                            </button>
-                            <button class="option-btn advanced" data-option="live-sync" data-level="advanced">
-                                <span class="option-icon"><i class="fas fa-sync"></i></span>
-                                <span>Any live/sync connection</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Connector 1→2 -->
-                <div class="flow-connector horizontal">
-                    <div class="flow-line"></div>
-                    <div class="flow-dot"></div>
-                </div>
-
-                <!-- Stage 2: Processing -->
-                <div class="pipeline-stage stage-process">
-                    <div class="stage-label">
-                        <span class="stage-number">2</span>
-                        <span>Processing</span>
-                    </div>
-                    <div class="config-area" data-area="kb-ingestion" id="area-kb-ingestion">
-                        <div class="area-header">
-                            <div class="area-icon"><i class="fas fa-cogs"></i></div>
-                            <h3>Knowledge Base Ingestion</h3>
-                            <span class="area-badge">+</span>
-                        </div>
-                        <div class="options-list">
-                            <button class="option-btn simple" data-option="standard-ingestion" data-level="simple">
-                                <span class="option-icon"><i class="fas fa-database"></i></span>
-                                <span>Standard KB Ingestion</span>
-                            </button>
-                            <button class="option-btn advanced" data-option="domain-specific" data-level="advanced">
-                                <span class="option-icon"><i class="fas fa-brain"></i></span>
-                                <span>Domain Specific Ingestion</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Connector 2→3 -->
-                <div class="flow-connector horizontal">
-                    <div class="flow-line"></div>
-                    <div class="flow-dot"></div>
-                </div>
-
-                <!-- Stage 3: Intelligence -->
-                <div class="pipeline-stage stage-intelligence">
-                    <div class="stage-label">
-                        <span class="stage-number">3</span>
-                        <span>Intelligence</span>
-                    </div>
-                    <div class="intelligence-stack">
-                        <div class="config-area compact" data-area="system-prompt" id="area-system-prompt">
+            <div class="pipeline-wrapper">
+                <div class="pipeline-container">
+                    <!-- Top: Data Sources -->
+                    <div class="pipeline-stage stage-data stage-top">
+                        <div class="config-area" data-area="data-sources" id="area-data-sources">
                             <div class="area-header">
-                                <div class="area-icon"><i class="fas fa-comment-dots"></i></div>
-                                <h3>System Prompt</h3>
-                                <span class="area-badge">+</span>
+                                <i class="fas fa-database"></i>
+                                <span>What information can the agent access?</span>
                             </div>
                             <div class="options-list">
-                                <button class="option-btn simple" data-option="custom-prompt" data-level="simple">
-                                    <span class="option-icon"><i class="fas fa-comment-dots"></i></span>
-                                    <span>Custom System Prompt</span>
+                                <button class="option-btn simple" data-option="sharepoint" data-level="simple">
+                                    <span class="option-icon"><i class="fab fa-microsoft"></i></span>
+                                    <span>SharePoint</span>
+                                </button>
+                                <button class="option-btn simple" data-option="blob-files" data-level="simple">
+                                    <span class="option-icon"><i class="fas fa-cloud"></i></span>
+                                    <span>Blob / Files</span>
+                                </button>
+                                <button class="option-btn simple" data-option="uploads" data-level="simple">
+                                    <span class="option-icon"><i class="fas fa-upload"></i></span>
+                                    <span>Uploads</span>
+                                </button>
+                                <button class="option-btn advanced" data-option="apis" data-level="advanced">
+                                    <span class="option-icon"><i class="fas fa-plug"></i></span>
+                                    <span>APIs</span>
+                                </button>
+                                <button class="option-btn advanced" data-option="other-sources" data-level="advanced">
+                                    <span class="option-icon"><i class="fas fa-ellipsis-h"></i></span>
+                                    <span>Other</span>
                                 </button>
                             </div>
                         </div>
-                        <div class="vertical-connector">
-                            <div class="flow-line vertical"></div>
-                        </div>
-                        <div class="config-area" data-area="tools" id="area-tools">
-                            <div class="area-header">
-                                <div class="area-icon"><i class="fas fa-tools"></i></div>
-                                <h3>Tools & Capabilities</h3>
-                                <span class="area-badge">+</span>
-                            </div>
-                            <div class="options-list">
-                                <button class="option-btn simple" data-option="image-understanding" data-level="simple">
-                                    <span class="option-icon"><i class="fas fa-eye"></i></span>
-                                    <span>Image Understanding</span>
-                                </button>
-                                <button class="option-btn advanced" data-option="image-creation" data-level="advanced">
-                                    <span class="option-icon"><i class="fas fa-paint-brush"></i></span>
-                                    <span>Image Creation</span>
-                                </button>
-                                <button class="option-btn advanced" data-option="speech-to-text" data-level="advanced">
-                                    <span class="option-icon"><i class="fas fa-microphone"></i></span>
-                                    <span>Speech to text</span>
-                                </button>
-                                <button class="option-btn simple" data-option="simple-rag" data-level="simple">
-                                    <span class="option-icon"><i class="fas fa-search"></i></span>
-                                    <span>Simple RAG / File search</span>
-                                </button>
-                                <button class="option-btn advanced" data-option="code-execution" data-level="advanced">
-                                    <span class="option-icon"><i class="fas fa-code"></i></span>
-                                    <span>Code execution/Data Analyst</span>
-                                </button>
-                                <button class="option-btn advanced" data-option="custom-rag" data-level="advanced">
-                                    <span class="option-icon"><i class="fas fa-cogs"></i></span>
-                                    <span>Custom RAG</span>
-                                </button>
-                                <button class="option-btn tbd" data-option="custom-tool" data-level="tbd">
-                                    <span class="option-icon"><i class="fas fa-wrench"></i></span>
-                                    <span>Custom Tool</span>
-                                </button>
-                            </div>
+                        <div class="stage-label">
+                            <span class="stage-number">1</span>
+                            <span>Data Sources</span>
                         </div>
                     </div>
-                </div>
 
-                <!-- Connector 3→4 -->
-                <div class="flow-connector horizontal">
-                    <div class="flow-line"></div>
-                    <div class="flow-dot pulse"></div>
-                </div>
-
-                <!-- Stage 4: Agent Core (CENTER) -->
-                <div class="pipeline-stage stage-agent">
-                    <div class="stage-label agent-label">
-                        <span class="stage-number">4</span>
-                        <span>Agent Core</span>
+                    <!-- Vertical Connector: Data Sources → Agent Core -->
+                    <div class="flow-connector vertical top-connector">
+                        <div class="flow-line"></div>
+                        <div class="flow-dot"></div>
                     </div>
-                    <div class="agent-hub" id="area-workflow">
-                        <div class="agent-glow"></div>
-                        <div class="agent-ring ring-1"></div>
-                        <div class="agent-ring ring-2"></div>
-                        <div class="agent-core" data-area="workflow">
-                            <div class="agent-icon">
-                                <i class="fas fa-robot"></i>
+
+                    <!-- Middle Row: Tools & Capabilities | Agent Core | User Interface -->
+                    <div class="pipeline-middle-row">
+                        <!-- Left: Tools & Capabilities -->
+                        <div class="pipeline-stage stage-tools stage-left">
+                            <div class="config-area" data-area="tools" id="area-tools">
+                                <div class="area-header">
+                                    <i class="fas fa-tools"></i>
+                                    <span>What can the agent do?</span>
+                                </div>
+                                <div class="options-list">
+                                    <button class="option-btn simple always-on" data-option="prompt" data-level="simple">
+                                        <span class="option-icon"><i class="fas fa-comment-dots"></i></span>
+                                        <span>Instructions</span>
+                                        <span class="badge-default">Default</span>
+                                    </button>
+                                    <button class="option-btn simple" data-option="retrieval" data-level="simple">
+                                        <span class="option-icon"><i class="fas fa-search"></i></span>
+                                        <span>Retrieval (RAG)</span>
+                                    </button>
+                                    <button class="option-btn simple" data-option="employee-search" data-level="simple">
+                                        <span class="option-icon"><i class="fas fa-user-tie"></i></span>
+                                        <span>Employee Search</span>
+                                    </button>
+                                    <button class="option-btn simple" data-option="docuscan" data-level="simple">
+                                        <span class="option-icon"><i class="fas fa-file-alt"></i></span>
+                                        <span>DocuScan</span>
+                                    </button>
+                                    <button class="option-btn advanced" data-option="multimodal" data-level="advanced">
+                                        <span class="option-icon"><i class="fas fa-images"></i></span>
+                                        <span>Multimodal</span>
+                                    </button>
+                                    <button class="option-btn advanced" data-option="code-execution" data-level="advanced">
+                                        <span class="option-icon"><i class="fas fa-code"></i></span>
+                                        <span>Data Analysis</span>
+                                    </button>
+                                    <button class="option-btn tbd" data-option="custom-tools" data-level="tbd">
+                                        <span class="option-icon"><i class="fas fa-wrench"></i></span>
+                                        <span>Custom Tools</span>
+                                    </button>
+                                </div>
                             </div>
-                            <h3>Agent Workflow</h3>
-                            <p class="agent-subtitle">Chain / Graph</p>
-                            <div class="workflow-options">
-                                <button class="workflow-btn simple" data-option="simple-flow" data-level="simple" title="Simple Flow">
-                                    <i class="fas fa-stream"></i>
-                                </button>
-                                <button class="workflow-btn advanced" data-option="advanced-flow" data-level="advanced" title="Advanced Flow">
-                                    <i class="fas fa-project-diagram"></i>
-                                </button>
-                                <button class="workflow-btn tbd" data-option="custom-flow" data-level="tbd" title="Custom Flow">
-                                    <i class="fas fa-sitemap"></i>
-                                </button>
+                            <div class="stage-label">
+                                <span class="stage-number">2</span>
+                                <span>Tools & Capabilities</span>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Connector: Agent to UI -->
-                <div class="flow-connector horizontal">
-                    <div class="flow-line outbound"></div>
-                    <div class="flow-dot pulse"></div>
-                </div>
-
-                <!-- Stage 5: Output -->
-                <div class="pipeline-stage stage-output">
-                    <div class="stage-label">
-                        <span class="stage-number">5</span>
-                        <span>User Interface</span>
-                    </div>
-                    <div class="config-area" data-area="ui-integration" id="area-ui-integration">
-                        <div class="area-header">
-                            <div class="area-icon"><i class="fas fa-desktop"></i></div>
-                            <h3>UI Integration</h3>
-                            <span class="area-badge">+</span>
+                        <!-- Horizontal Connector: Tools → Agent Core -->
+                        <div class="flow-connector horizontal left-connector">
+                            <div class="flow-line"></div>
+                            <div class="flow-dot pulse"></div>
                         </div>
-                        <div class="options-list">
-                            <button class="option-btn simple" data-option="launchpad" data-level="simple">
-                                <span class="option-icon"><i class="fas fa-rocket"></i></span>
-                                <span>Launchpad</span>
-                            </button>
-                            <button class="option-btn tbd" data-option="teams" data-level="tbd">
-                                <span class="option-icon"><i class="fab fa-microsoft"></i></span>
-                                <span>Teams</span>
-                            </button>
-                            <button class="option-btn tbd" data-option="email" data-level="tbd">
-                                <span class="option-icon"><i class="fas fa-envelope"></i></span>
-                                <span>Email</span>
-                            </button>
-                            <button class="option-btn tbd" data-option="custom-ui" data-level="tbd">
-                                <span class="option-icon"><i class="fas fa-palette"></i></span>
-                                <span>Custom UI</span>
-                            </button>
+
+                        <!-- Center: Agent Core -->
+                        <div class="pipeline-stage stage-agent">
+                            <div class="agent-hub" id="area-workflow">
+                                <div class="agent-glow"></div>
+                                <div class="agent-ring ring-1"></div>
+                                <div class="agent-ring ring-2"></div>
+                                <div class="agent-core" data-area="workflow">
+                                    <div class="agent-icon">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                    <h3>Agent Workflow</h3>
+                                    <p class="agent-subtitle">Chain / Graph</p>
+                                    <div class="workflow-options">
+                                        <button class="workflow-btn simple" data-option="simple-flow" data-level="simple" title="Simple Agent">
+                                            <span class="workflow-icon"><i class="fas fa-stream"></i></span>
+                                            <span class="workflow-label">Simple</span>
+                                        </button>
+                                        <button class="workflow-btn advanced" data-option="advanced-flow" data-level="advanced" title="Reflection Agent">
+                                            <span class="workflow-icon"><i class="fas fa-project-diagram"></i></span>
+                                            <span class="workflow-label">Reflection</span>
+                                        </button>
+                                        <button class="workflow-btn tbd" data-option="custom-flow" data-level="tbd" title="Custom Agent">
+                                            <span class="workflow-icon"><i class="fas fa-sitemap"></i></span>
+                                            <span class="workflow-label">Custom</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stage-label agent-label">
+                                <span class="stage-number">3</span>
+                                <span>Agent Core</span>
+                            </div>
+                        </div>
+
+                        <!-- Horizontal Connector: Agent Core → UI -->
+                        <div class="flow-connector horizontal right-connector">
+                            <div class="flow-line outbound"></div>
+                            <div class="flow-dot pulse"></div>
+                        </div>
+
+                        <!-- Right: User Interface -->
+                        <div class="pipeline-stage stage-output stage-right">
+                            <div class="config-area" data-area="ui-integration" id="area-ui-integration">
+                                <div class="area-header">
+                                    <i class="fas fa-desktop"></i>
+                                    <span>How will users interact?</span>
+                                </div>
+                                <div class="options-list">
+                                    <button class="option-btn simple" data-option="launchpad" data-level="simple">
+                                        <span class="option-icon"><i class="fas fa-rocket"></i></span>
+                                        <span>Launchpad</span>
+                                    </button>
+                                    <button class="option-btn simple" data-option="rest-api" data-level="simple">
+                                        <span class="option-icon"><i class="fas fa-code"></i></span>
+                                        <span>REST API</span>
+                                    </button>
+                                    <button class="option-btn tbd" data-option="teams" data-level="tbd">
+                                        <span class="option-icon"><i class="fab fa-microsoft"></i></span>
+                                        <span>Teams</span>
+                                    </button>
+                                    <button class="option-btn tbd" data-option="email" data-level="tbd">
+                                        <span class="option-icon"><i class="fas fa-envelope"></i></span>
+                                        <span>Email</span>
+                                    </button>
+                                    <button class="option-btn tbd" data-option="custom-ui" data-level="tbd">
+                                        <span class="option-icon"><i class="fas fa-palette"></i></span>
+                                        <span>Custom UI</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="stage-label">
+                                <span class="stage-number">4</span>
+                                <span>User Interface</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="output-indicator">
-                        <i class="fas fa-users"></i>
-                        <span>End Users</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Flow Description -->
-            <div class="flow-description">
-                <div class="flow-step">
-                    <i class="fas fa-arrow-right"></i>
-                    <span>Data flows from sources through ingestion, gets enriched with prompts & tools, processed by the agent, and delivered via UI</span>
                 </div>
             </div>
         </main>
 
-        <!-- Basket/Summary Panel -->
-        <aside class="basket-panel">
-            <div class="basket-header">
-                <h3><i class="fas fa-shopping-cart"></i> Configuration Summary</h3>
-            </div>
-            <div class="basket-content">
-                <div class="basket-items" id="basketItems">
-                    <p class="empty-basket">Select options to build your agent configuration</p>
-                </div>
-                <div class="basket-totals">
-                    <div class="total-row">
-                        <span>Estimated Time:</span>
-                        <span id="totalTime">0 hours</span>
-                    </div>
-                    <div class="total-row">
-                        <span>Estimated Cost:</span>
-                        <span id="totalCost">0DKK</span>
-                    </div>
-                    <div class="total-row complexity">
-                        <span>Complexity Level:</span>
-                        <span id="complexityLevel">-</span>
-                    </div>
-                </div>
-            </div>
-            <button class="btn-preview" id="previewBtn" disabled>
-                <i class="fas fa-eye"></i> Preview Chatbot
+        <!-- Right Resize Handle -->
+        <div class="resize-handle right" id="resizeRight"></div>
+
+        <!-- Right Panel - Live Preview -->
+        <aside class="preview-panel" id="previewPanel">
+            <button class="collapse-btn right" id="collapseRight" title="Collapse preview">
+                <i class="fas fa-chevron-right"></i>
             </button>
+            <div class="preview-header">
+                <h3><i class="fas fa-eye"></i> Live Preview</h3>
+                <div class="preview-status">
+                    <span class="status-dot"></span>
+                    <span>Real-time</span>
+                </div>
+            </div>
+
+            <div class="chatbot-preview-container">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="chat-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="chat-info">
+                            <span class="chat-name">Agent Assistant</span>
+                            <span class="chat-status"><i class="fas fa-circle"></i> Online</span>
+                        </div>
+                        <div class="chat-actions">
+                            <button class="chat-btn" id="voiceBtn" title="Voice Input" style="display: none;">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <button class="chat-btn" id="imageUploadBtn" title="Upload Image" style="display: none;">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <button class="chat-btn" id="fileSearchBtn" title="Search Files" style="display: none;">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message bot">
+                            <div class="message-avatar"><i class="fas fa-robot"></i></div>
+                            <div class="message-content">
+                                <p>Hello! I'm your configured Agent Assistant. How can I help you today?</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-capabilities" id="chatCapabilities">
+                        <!-- Capability badges will be inserted here -->
+                    </div>
+                    <div class="chat-input-area">
+                        <div class="chat-input-container">
+                            <input type="text" id="chatInput" placeholder="Type a message...">
+                            <div class="chat-input-features" id="chatInputFeatures">
+                                <!-- Multimodal feature icons shown when enabled -->
+                            </div>
+                            <button class="send-btn" id="sendBtn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-metrics">
+                <h4>Estimated Metrics</h4>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span class="metric-label">Response Time</span>
+                        <span class="metric-value" id="previewResponseTime">~1.0s</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Accuracy</span>
+                        <span class="metric-value" id="previewAccuracy">80%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Monthly Cost</span>
+                        <span class="metric-value" id="previewMonthlyCost">100 DKK</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-config" id="previewConfig">
+                <h4>Active Configuration</h4>
+                <div class="config-items" id="configItems">
+                    <p class="no-config">No options selected yet</p>
+                </div>
+            </div>
         </aside>
     </div>
 
@@ -336,7 +379,7 @@
                 <!-- Tabs -->
                 <div class="settings-tabs">
                     <button class="settings-tab active" data-tab="pricing">
-                        <i class="fas fa-dollar-sign"></i> Pricing
+                        <i class="fas fa-coins"></i> Pricing
                     </button>
                     <button class="settings-tab" data-tab="options">
                         <i class="fas fa-list"></i> Manage Options
@@ -350,33 +393,33 @@
                             <h4 class="simple-text">Simple (Yellow)</h4>
                             <div class="setting-row">
                                 <label>Time (hours):</label>
-                                <input type="number" id="simpleTime" value="4" min="0" step="0.5">
+                                <input type="number" id="simpleTime" value="40" min="0" step="0.5">
                             </div>
                             <div class="setting-row">
                                 <label>Cost (DKK):</label>
-                                <input type="number" id="simpleCost" value="500" min="0" step="50">
+                                <input type="number" id="simpleCost" value="50000" min="0" step="50">
                             </div>
                         </div>
                         <div class="setting-group">
                             <h4 class="advanced-text">Advanced (Orange)</h4>
                             <div class="setting-row">
                                 <label>Time (hours):</label>
-                                <input type="number" id="advancedTime" value="12" min="0" step="0.5">
+                                <input type="number" id="advancedTime" value="80" min="0" step="0.5">
                             </div>
                             <div class="setting-row">
                                 <label>Cost (DKK):</label>
-                                <input type="number" id="advancedCost" value="1500" min="0" step="50">
+                                <input type="number" id="advancedCost" value="100000" min="0" step="50">
                             </div>
                         </div>
                         <div class="setting-group">
                             <h4 class="tbd-text">To Be Decided (Red)</h4>
                             <div class="setting-row">
                                 <label>Time (hours):</label>
-                                <input type="number" id="tbdTime" value="24" min="0" step="0.5">
+                                <input type="number" id="tbdTime" value="160" min="0" step="0.5">
                             </div>
                             <div class="setting-row">
                                 <label>Cost (DKK):</label>
-                                <input type="number" id="tbdCost" value="3000" min="0" step="50">
+                                <input type="number" id="tbdCost" value="200000" min="0" step="50">
                             </div>
                         </div>
                     </div>
@@ -392,82 +435,6 @@
             <div class="modal-footer">
                 <button class="btn-secondary" id="resetSettings">Reset to Default</button>
                 <button class="btn-primary" id="saveSettings">Save Settings</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Chatbot Preview Modal -->
-    <div class="modal" id="previewModal">
-        <div class="modal-content preview-modal">
-            <div class="modal-header">
-                <h3><i class="fas fa-robot"></i> Chatbot Preview</h3>
-                <button class="modal-close" id="closePreview">&times;</button>
-            </div>
-            <div class="modal-body preview-body">
-                <div class="chatbot-preview">
-                    <div class="chat-container">
-                        <div class="chat-header">
-                            <div class="chat-avatar">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <div class="chat-info">
-                                <span class="chat-name">Agents</span>
-                                <span class="chat-status"><i class="fas fa-circle"></i> Online</span>
-                            </div>
-                            <div class="chat-actions">
-                                <button class="chat-btn" id="voiceBtn" title="Voice Input" style="display: none;">
-                                    <i class="fas fa-microphone"></i>
-                                </button>
-                                <button class="chat-btn" id="imageUploadBtn" title="Upload Image" style="display: none;">
-                                    <i class="fas fa-image"></i>
-                                </button>
-                                <button class="chat-btn" id="fileSearchBtn" title="Search Files" style="display: none;">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="chat-messages" id="chatMessages">
-                            <div class="message bot">
-                                <div class="message-avatar"><i class="fas fa-robot"></i></div>
-                                <div class="message-content">
-                                    <p>Hello! I'm your configured Agent Building Assistant. How can I help you today?</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chat-capabilities" id="chatCapabilities">
-                            <!-- Capability badges will be inserted here -->
-                        </div>
-                        <div class="chat-input-area">
-                            <div class="chat-input-container">
-                                <input type="text" class="chat-input" placeholder="Type your message..." id="chatInput">
-                                <button class="chat-send" id="sendBtn">
-                                    <i class="fas fa-paper-plane"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="preview-sidebar">
-                        <h4>Active Configuration</h4>
-                        <div class="preview-config" id="previewConfig">
-                            <!-- Configuration summary will be inserted here -->
-                        </div>
-                        <div class="preview-info">
-                            <h4>Estimated Metrics</h4>
-                            <div class="metric">
-                                <span>Response Time:</span>
-                                <span id="previewResponseTime">~1.5s</span>
-                            </div>
-                            <div class="metric">
-                                <span>Accuracy:</span>
-                                <span id="previewAccuracy">85%</span>
-                            </div>
-                            <div class="metric">
-                                <span>Monthly Cost:</span>
-                                <span id="previewMonthlyCost">15000 DKK</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
