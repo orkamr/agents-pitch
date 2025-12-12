@@ -5,82 +5,75 @@ const COLOR_PRESETS = {
     tbd: { bg: '#fca5a5', border: '#ef4444', text: '#991b1b' }
 };
 
-// Configuration data - now mutable for dynamic options
+// Configuration data - reorganized structure
 let CONFIG_DATA = {
     areas: {
-        'kb-integrations': {
-            name: 'Knowledge Base Integrations',
+        'data-sources': {
+            name: 'Data Sources',
             icon: 'fa-database',
-            required: false
-        },
-        'kb-ingestion': {
-            name: 'Knowledge Base Ingestion',
-            icon: 'fa-cogs',
-            required: false
-        },
-        'system-prompt': {
-            name: 'System Prompt/Instructions',
-            icon: 'fa-comment-dots',
-            required: true
+            required: false,
+            description: 'What information can the agent access?'
         },
         'tools': {
-            name: 'Tools/Capabilities',
+            name: 'Tools & Capabilities',
             icon: 'fa-tools',
-            required: true
+            required: true,
+            description: 'What can the agent do?'
         },
         'workflow': {
             name: 'Agent Workflow',
             icon: 'fa-project-diagram',
-            required: true
+            required: true,
+            description: 'How does the agent reason?'
         },
         'ui-integration': {
-            name: 'UI Integration',
+            name: 'User Interface',
             icon: 'fa-desktop',
-            required: true
+            required: true,
+            description: 'How will users interact?'
         }
     },
     options: {
-        // KB Integrations
-        'sharepoint': { name: 'Sharepoint', icon: 'fab fa-microsoft', area: 'kb-integrations', level: 'simple', time: 4, cost: 500, color: null },
-        'azure-blob': { name: 'Azure BlobStorage', icon: 'fas fa-cloud', area: 'kb-integrations', level: 'simple', time: 4, cost: 500, color: null },
-        'upload-local': { name: 'Upload from local', icon: 'fas fa-upload', area: 'kb-integrations', level: 'simple', time: 4, cost: 500, color: null },
-        'custom-api': { name: 'Custom API', icon: 'fas fa-plug', area: 'kb-integrations', level: 'advanced', time: 12, cost: 1500, color: null },
-        'live-sync': { name: 'Any live/sync connection', icon: 'fas fa-sync', area: 'kb-integrations', level: 'advanced', time: 12, cost: 1500, color: null },
-        // KB Ingestion
-        'standard-ingestion': { name: 'Standard KB Ingestion', icon: 'fas fa-database', area: 'kb-ingestion', level: 'simple', time: 4, cost: 500, color: null },
-        'domain-specific': { name: 'Domain Specific Ingestion', icon: 'fas fa-brain', area: 'kb-ingestion', level: 'advanced', time: 12, cost: 1500, color: null },
-        // System Prompt
-        'custom-prompt': { name: 'Custom System Prompt', icon: 'fas fa-comment-dots', area: 'system-prompt', level: 'simple', time: 4, cost: 500, color: null },
-        // Tools
-        'image-understanding': { name: 'Image Understanding', icon: 'fas fa-eye', area: 'tools', level: 'simple', time: 4, cost: 500, color: null },
-        'image-creation': { name: 'Image Creation', icon: 'fas fa-paint-brush', area: 'tools', level: 'advanced', time: 12, cost: 1500, color: null },
-        'speech-to-text': { name: 'Speech to text', icon: 'fas fa-microphone', area: 'tools', level: 'advanced', time: 12, cost: 1500, color: null },
-        'simple-rag': { name: 'Simple RAG / File search', icon: 'fas fa-search', area: 'tools', level: 'simple', time: 4, cost: 500, color: null },
-        'code-execution': { name: 'Code execution/Data Analyst', icon: 'fas fa-code', area: 'tools', level: 'advanced', time: 12, cost: 1500, color: null },
-        'custom-rag': { name: 'Custom RAG', icon: 'fas fa-cogs', area: 'tools', level: 'advanced', time: 12, cost: 1500, color: null },
-        'custom-tool': { name: 'Custom Tool', icon: 'fas fa-wrench', area: 'tools', level: 'tbd', time: 24, cost: 3000, color: null },
+        // Data Sources
+        'sharepoint': { name: 'SharePoint', icon: 'fab fa-microsoft', area: 'data-sources', level: 'simple', time: 40, cost: 50000, color: null },
+        'blob-files': { name: 'Blob / Files', icon: 'fas fa-cloud', area: 'data-sources', level: 'simple', time: 40, cost: 50000, color: null },
+        'uploads': { name: 'Uploads', icon: 'fas fa-upload', area: 'data-sources', level: 'simple', time: 40, cost: 50000, color: null },
+        'apis': { name: 'APIs', icon: 'fas fa-plug', area: 'data-sources', level: 'advanced', time: 80, cost: 100000, color: null },
+        'other-sources': { name: 'Other', icon: 'fas fa-ellipsis-h', area: 'data-sources', level: 'advanced', time: 80, cost: 100000, color: null },
+
+        // Tools & Capabilities
+        'prompt': { name: 'Instructions', icon: 'fas fa-comment-dots', area: 'tools', level: 'simple', time: 40, cost: 50000, color: null, alwaysOn: true },
+        'retrieval': { name: 'Retrieval (RAG)', icon: 'fas fa-search', area: 'tools', level: 'simple', time: 40, cost: 50000, color: null },
+        'employee-search': { name: 'Employee Search', icon: 'fas fa-user-tie', area: 'tools', level: 'simple', time: 40, cost: 50000, color: null },
+        'docuscan': { name: 'DocuScan', icon: 'fas fa-file-alt', area: 'tools', level: 'simple', time: 40, cost: 50000, color: null },
+        'multimodal': { name: 'Multimodal', icon: 'fas fa-images', area: 'tools', level: 'advanced', time: 80, cost: 100000, color: null },
+        'code-execution': { name: 'Data Analysis', icon: 'fas fa-code', area: 'tools', level: 'advanced', time: 80, cost: 100000, color: null },
+        'custom-tools': { name: 'Custom Tools', icon: 'fas fa-wrench', area: 'tools', level: 'tbd', time: 160, cost: 200000, color: null },
+
         // Workflow
-        'simple-flow': { name: 'Simple flow', icon: 'fas fa-stream', area: 'workflow', level: 'simple', time: 4, cost: 500, color: null },
-        'advanced-flow': { name: 'Advanced flow', icon: 'fas fa-project-diagram', area: 'workflow', level: 'advanced', time: 12, cost: 1500, color: null },
-        'custom-flow': { name: 'Custom flow', icon: 'fas fa-sitemap', area: 'workflow', level: 'tbd', time: 24, cost: 3000, color: null },
+        'simple-flow': { name: 'Simple Agent', icon: 'fas fa-stream', area: 'workflow', level: 'simple', time: 40, cost: 50000, color: null },
+        'advanced-flow': { name: 'Reflection Agent', icon: 'fas fa-project-diagram', area: 'workflow', level: 'advanced', time: 80, cost: 100000, color: null },
+        'custom-flow': { name: 'Custom Agent', icon: 'fas fa-sitemap', area: 'workflow', level: 'tbd', time: 160, cost: 200000, color: null },
+
         // UI Integration
-        'launchpad': { name: 'Launchpad', icon: 'fas fa-rocket', area: 'ui-integration', level: 'simple', time: 4, cost: 500, color: null },
-        'teams': { name: 'Teams', icon: 'fab fa-microsoft', area: 'ui-integration', level: 'tbd', time: 24, cost: 3000, color: null },
-        'email': { name: 'Email', icon: 'fas fa-envelope', area: 'ui-integration', level: 'tbd', time: 24, cost: 3000, color: null },
-        'custom-ui': { name: 'Custom UI', icon: 'fas fa-palette', area: 'ui-integration', level: 'tbd', time: 24, cost: 3000, color: null }
+        'launchpad': { name: 'Launchpad', icon: 'fas fa-rocket', area: 'ui-integration', level: 'simple', time: 40, cost: 50000, color: null },
+        'rest-api': { name: 'REST API', icon: 'fas fa-code', area: 'ui-integration', level: 'simple', time: 40, cost: 50000, color: null },
+        'teams': { name: 'Teams', icon: 'fab fa-microsoft', area: 'ui-integration', level: 'tbd', time: 160, cost: 200000, color: null },
+        'email': { name: 'Email', icon: 'fas fa-envelope', area: 'ui-integration', level: 'tbd', time: 160, cost: 200000, color: null },
+        'custom-ui': { name: 'Custom UI', icon: 'fas fa-palette', area: 'ui-integration', level: 'tbd', time: 160, cost: 200000, color: null }
     }
 };
 
 // Required areas for validation
-const REQUIRED_AREAS = ['system-prompt', 'tools', 'workflow', 'ui-integration'];
+const REQUIRED_AREAS = ['tools', 'workflow', 'ui-integration'];
 
 // State management
 let state = {
     selectedOptions: new Map(),
     settings: {
-        simple: { time: 4, cost: 500 },
-        advanced: { time: 12, cost: 1500 },
-        tbd: { time: 24, cost: 3000 }
+        simple: { time: 40, cost: 50000 },
+        advanced: { time: 80, cost: 100000 },
+        tbd: { time: 160, cost: 200000 }
     }
 };
 
@@ -134,12 +127,224 @@ function updateSettingsInputs() {
     document.getElementById('tbdCost').value = state.settings.tbd.cost;
 }
 
+// Zoom and pan state
+let viewState = {
+    zoom: 1,
+    panX: 0,
+    panY: 0,
+    isPanning: false,
+    startX: 0,
+    startY: 0
+};
+
 // Initialize the application
 function init() {
     loadSettings();
     setupEventListeners();
+    setupResizeHandles();
+    setupCollapseButtons();
+    setupZoomPan();
+
+    // Auto-select prompt (always on)
+    const promptBtn = document.querySelector('[data-option="prompt"]');
+    if (promptBtn && !state.selectedOptions.has('prompt')) {
+        state.selectedOptions.set('prompt', { level: 'simple', ...CONFIG_DATA.options['prompt'] });
+        promptBtn.classList.add('selected');
+    }
+
     updateBasket();
+    updateLivePreview();
     applyCustomColors();
+}
+
+// Setup resize handles for sidebars
+function setupResizeHandles() {
+    const resizeLeft = document.getElementById('resizeLeft');
+    const resizeRight = document.getElementById('resizeRight');
+    const sidebarLeft = document.getElementById('sidebarLeft');
+    const previewPanel = document.getElementById('previewPanel');
+
+    let isResizing = false;
+    let currentHandle = null;
+
+    function startResize(e, handle) {
+        isResizing = true;
+        currentHandle = handle;
+        handle.classList.add('active');
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+        e.preventDefault();
+    }
+
+    function doResize(e) {
+        if (!isResizing) return;
+
+        if (currentHandle === resizeLeft) {
+            const newWidth = e.clientX;
+            if (newWidth >= 200 && newWidth <= 400) {
+                sidebarLeft.style.width = newWidth + 'px';
+            }
+        } else if (currentHandle === resizeRight) {
+            const containerWidth = document.querySelector('.app-container').offsetWidth;
+            const newWidth = containerWidth - e.clientX;
+            if (newWidth >= 300 && newWidth <= containerWidth * 0.6) {
+                previewPanel.style.width = newWidth + 'px';
+            }
+        }
+    }
+
+    function stopResize() {
+        if (isResizing) {
+            isResizing = false;
+            if (currentHandle) {
+                currentHandle.classList.remove('active');
+            }
+            currentHandle = null;
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        }
+    }
+
+    resizeLeft.addEventListener('mousedown', (e) => startResize(e, resizeLeft));
+    resizeRight.addEventListener('mousedown', (e) => startResize(e, resizeRight));
+    document.addEventListener('mousemove', doResize);
+    document.addEventListener('mouseup', stopResize);
+}
+
+// Setup collapse/expand buttons
+function setupCollapseButtons() {
+    const collapseLeft = document.getElementById('collapseLeft');
+    const collapseRight = document.getElementById('collapseRight');
+    const expandLeft = document.getElementById('expandLeft');
+    const expandRight = document.getElementById('expandRight');
+    const sidebarLeft = document.getElementById('sidebarLeft');
+    const previewPanel = document.getElementById('previewPanel');
+    const resizeLeft = document.getElementById('resizeLeft');
+    const resizeRight = document.getElementById('resizeRight');
+
+    collapseLeft.addEventListener('click', () => {
+        sidebarLeft.classList.add('collapsed');
+        resizeLeft.style.display = 'none';
+        expandLeft.classList.add('visible');
+    });
+
+    collapseRight.addEventListener('click', () => {
+        previewPanel.classList.add('collapsed');
+        resizeRight.style.display = 'none';
+        expandRight.classList.add('visible');
+    });
+
+    expandLeft.addEventListener('click', () => {
+        sidebarLeft.classList.remove('collapsed');
+        resizeLeft.style.display = '';
+        expandLeft.classList.remove('visible');
+    });
+
+    expandRight.addEventListener('click', () => {
+        previewPanel.classList.remove('collapsed');
+        resizeRight.style.display = '';
+        expandRight.classList.remove('visible');
+    });
+}
+
+// Setup zoom and pan controls
+function setupZoomPan() {
+    const mainContent = document.getElementById('mainContent');
+    const pipelineWrapper = document.querySelector('.pipeline-wrapper');
+    const zoomIn = document.getElementById('zoomIn');
+    const zoomOut = document.getElementById('zoomOut');
+    const zoomReset = document.getElementById('zoomReset');
+    const zoomFit = document.getElementById('zoomFit');
+    const zoomLevel = document.getElementById('zoomLevel');
+
+    function updateTransform() {
+        pipelineWrapper.style.transform = `translate(${viewState.panX}px, ${viewState.panY}px) scale(${viewState.zoom})`;
+        zoomLevel.textContent = Math.round(viewState.zoom * 100) + '%';
+    }
+
+    function setZoom(newZoom) {
+        viewState.zoom = Math.max(0.25, Math.min(2, newZoom));
+        updateTransform();
+    }
+
+    zoomIn.addEventListener('click', () => setZoom(viewState.zoom + 0.1));
+    zoomOut.addEventListener('click', () => setZoom(viewState.zoom - 0.1));
+    zoomReset.addEventListener('click', () => {
+        viewState.zoom = 1;
+        viewState.panX = 0;
+        viewState.panY = 0;
+        updateTransform();
+    });
+
+    zoomFit.addEventListener('click', () => {
+        const contentRect = mainContent.getBoundingClientRect();
+        const pipelineRect = document.querySelector('.pipeline-container').getBoundingClientRect();
+
+        const scaleX = (contentRect.width - 100) / (pipelineRect.width / viewState.zoom);
+        const scaleY = (contentRect.height - 100) / (pipelineRect.height / viewState.zoom);
+        const newZoom = Math.min(scaleX, scaleY, 1);
+
+        viewState.zoom = Math.max(0.25, newZoom);
+        viewState.panX = 0;
+        viewState.panY = 0;
+        updateTransform();
+    });
+
+    // Mouse wheel zoom (simple scroll without ctrl/cmd)
+    mainContent.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        setZoom(viewState.zoom + delta);
+    }, { passive: false });
+
+    // Pan with mouse drag
+    pipelineWrapper.addEventListener('mousedown', (e) => {
+        if (e.target === pipelineWrapper || e.target.classList.contains('pipeline-container')) {
+            viewState.isPanning = true;
+            viewState.startX = e.clientX - viewState.panX;
+            viewState.startY = e.clientY - viewState.panY;
+            pipelineWrapper.classList.add('panning');
+        }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (viewState.isPanning) {
+            viewState.panX = e.clientX - viewState.startX;
+            viewState.panY = e.clientY - viewState.startY;
+            updateTransform();
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (viewState.isPanning) {
+            viewState.isPanning = false;
+            pipelineWrapper.classList.remove('panning');
+        }
+    });
+
+    // Touch support for mobile
+    let touchStartX, touchStartY;
+    pipelineWrapper.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+            viewState.isPanning = true;
+            touchStartX = e.touches[0].clientX - viewState.panX;
+            touchStartY = e.touches[0].clientY - viewState.panY;
+            pipelineWrapper.classList.add('panning');
+        }
+    }, { passive: true });
+
+    pipelineWrapper.addEventListener('touchmove', (e) => {
+        if (viewState.isPanning && e.touches.length === 1) {
+            viewState.panX = e.touches[0].clientX - touchStartX;
+            viewState.panY = e.touches[0].clientY - touchStartY;
+            updateTransform();
+        }
+    }, { passive: true });
+
+    pipelineWrapper.addEventListener('touchend', () => {
+        viewState.isPanning = false;
+        pipelineWrapper.classList.remove('panning');
+    });
 }
 
 // Apply custom colors to options
@@ -174,10 +379,6 @@ function setupEventListeners() {
     document.getElementById('saveSettings').addEventListener('click', handleSaveSettings);
     document.getElementById('resetSettings').addEventListener('click', resetSettingsToDefault);
 
-    // Preview modal
-    document.getElementById('previewBtn').addEventListener('click', openPreviewModal);
-    document.getElementById('closePreview').addEventListener('click', closePreviewModal);
-
     // Reset button
     document.getElementById('resetBtn').addEventListener('click', resetSelection);
 
@@ -195,25 +396,43 @@ function setupEventListeners() {
             }
         });
     });
-
-    // Add mobile basket toggle
-    addMobileBasketToggle();
 }
 
 // Toggle option selection
 function toggleOption(btn) {
     const optionId = btn.dataset.option;
     const level = btn.dataset.level;
+    const option = CONFIG_DATA.options[optionId];
 
-    if (state.selectedOptions.has(optionId)) {
-        state.selectedOptions.delete(optionId);
-        btn.classList.remove('selected');
-    } else {
+    // Prevent toggling always-on options
+    if (option && option.alwaysOn) {
+        return;
+    }
+
+    // Single-select for workflow area (Agent Workflow)
+    if (option.area === 'workflow') {
+        // Deselect all other workflow options
+        document.querySelectorAll('.workflow-btn.selected').forEach(selectedBtn => {
+            selectedBtn.classList.remove('selected');
+            state.selectedOptions.delete(selectedBtn.dataset.option);
+        });
+
+        // Select the clicked option
         state.selectedOptions.set(optionId, { level, ...CONFIG_DATA.options[optionId] });
         btn.classList.add('selected');
+    } else {
+        // Multi-select for other areas
+        if (state.selectedOptions.has(optionId)) {
+            state.selectedOptions.delete(optionId);
+            btn.classList.remove('selected');
+        } else {
+            state.selectedOptions.set(optionId, { level, ...CONFIG_DATA.options[optionId] });
+            btn.classList.add('selected');
+        }
     }
 
     updateBasket();
+    updateLivePreview();
 }
 
 // Check if all required areas have at least one selection
@@ -239,26 +458,15 @@ function updateBasket() {
     const totalTime = document.getElementById('totalTime');
     const totalCost = document.getElementById('totalCost');
     const complexityLevel = document.getElementById('complexityLevel');
-    const previewBtn = document.getElementById('previewBtn');
-
-    // Check validation
-    const validation = validateRequiredAreas();
 
     if (state.selectedOptions.size === 0) {
         basketItems.innerHTML = `
             <p class="empty-basket">Select options to build your agent configuration</p>
-            <div class="required-hint">
-                <i class="fas fa-info-circle"></i>
-                <span>Required: System Prompt, Tools, Agent Workflow, UI</span>
-            </div>
         `;
         totalTime.textContent = '0 hours';
         totalCost.textContent = '0 DKK';
         complexityLevel.textContent = '-';
         complexityLevel.className = '';
-        previewBtn.disabled = true;
-        previewBtn.title = 'Select required options first';
-        updateMobileBasketBadge(0);
         return;
     }
 
@@ -285,22 +493,12 @@ function updateBasket() {
                     <span class="basket-item-name">${option.name}</span>
                     <span class="basket-item-cost">${timeCost.cost} DKK</span>
                 </div>
-                <button class="basket-item-remove" onclick="removeOption('${optionId}')" title="Remove">
+                <button class="basket-item-remove" onclick="removeOption('${optionId}')" title="Remove" ${option.alwaysOn ? 'disabled style="opacity:0.3;cursor:not-allowed"' : ''}>
                     <i class="fas fa-times"></i>
                 </button>
             </div>
         `;
     });
-
-    // Add missing requirements warning
-    if (!validation.valid) {
-        html += `
-            <div class="missing-requirements">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span>Missing: ${validation.missing.join(', ')}</span>
-            </div>
-        `;
-    }
 
     basketItems.innerHTML = html;
     totalTime.textContent = `${time} hours`;
@@ -309,17 +507,17 @@ function updateBasket() {
     const levelLabels = { simple: 'Simple', advanced: 'Advanced', tbd: 'Complex' };
     complexityLevel.textContent = levelLabels[maxLevel];
     complexityLevel.className = `complexity-${maxLevel}`;
-
-    previewBtn.disabled = !validation.valid;
-    previewBtn.title = validation.valid ? 'Preview your chatbot' : `Missing: ${validation.missing.join(', ')}`;
-    updateMobileBasketBadge(state.selectedOptions.size);
 }
 
 // Remove option from basket
 function removeOption(optionId) {
+    const option = CONFIG_DATA.options[optionId];
+    if (option && option.alwaysOn) return;
+
     state.selectedOptions.delete(optionId);
     document.querySelector(`[data-option="${optionId}"]`)?.classList.remove('selected');
     updateBasket();
+    updateLivePreview();
 }
 
 // Reset all selections
@@ -328,7 +526,159 @@ function resetSelection() {
     document.querySelectorAll('.option-btn.selected, .workflow-btn.selected').forEach(btn => {
         btn.classList.remove('selected');
     });
+
+    // Re-select always-on options
+    const promptBtn = document.querySelector('[data-option="prompt"]');
+    if (promptBtn) {
+        state.selectedOptions.set('prompt', { level: 'simple', ...CONFIG_DATA.options['prompt'] });
+        promptBtn.classList.add('selected');
+    }
+
     updateBasket();
+    updateLivePreview();
+}
+
+// Update live preview in real-time
+function updateLivePreview() {
+    updatePreviewCapabilities();
+    updatePreviewConfig();
+    updatePreviewMetrics();
+    updateChatWelcome();
+}
+
+// Update preview capabilities
+function updatePreviewCapabilities() {
+    const container = document.getElementById('chatCapabilities');
+    const voiceBtn = document.getElementById('voiceBtn');
+    const imageBtn = document.getElementById('imageUploadBtn');
+    const searchBtn = document.getElementById('fileSearchBtn');
+    const featuresContainer = document.getElementById('chatInputFeatures');
+
+    let badges = [];
+    let inputFeatures = [];
+
+    // Show/hide action buttons based on selection
+    voiceBtn.style.display = state.selectedOptions.has('multimodal') ? 'flex' : 'none';
+    imageBtn.style.display = state.selectedOptions.has('multimodal') ? 'flex' : 'none';
+    searchBtn.style.display = state.selectedOptions.has('retrieval') ? 'flex' : 'none';
+
+    // Create capability badges and input features
+    if (state.selectedOptions.has('multimodal')) {
+        inputFeatures.push(`<button class="chat-feature-btn" title="Voice Input"><i class="fas fa-microphone"></i></button>`);
+        inputFeatures.push(`<button class="chat-feature-btn" title="Upload Image"><i class="fas fa-image"></i></button>`);
+    }
+
+    if (state.selectedOptions.has('retrieval')) {
+        inputFeatures.push(`<button class="chat-feature-btn" title="Search Files"><i class="fas fa-search"></i></button>`);
+    }
+
+    state.selectedOptions.forEach((option) => {
+        if (option.area === 'tools') {
+            badges.push(`<span class="capability-badge"><i class="${option.icon}"></i> ${option.name}</span>`);
+        }
+    });
+
+    container.innerHTML = badges.length > 0 ? badges.join('') : '';
+    featuresContainer.innerHTML = inputFeatures.join('');
+}
+
+// Update preview configuration list
+function updatePreviewConfig() {
+    const container = document.getElementById('configItems');
+
+    if (state.selectedOptions.size === 0) {
+        container.innerHTML = '<p class="no-config">No options selected yet</p>';
+        return;
+    }
+
+    let html = '';
+    state.selectedOptions.forEach((option) => {
+        html += `
+            <div class="config-item">
+                <i class="${option.icon}"></i>
+                <span>${option.name}</span>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
+// Update preview metrics
+function updatePreviewMetrics() {
+    let baseResponseTime = 1.0;
+    let baseAccuracy = 80;
+    let baseMonthlyCost = 100;
+
+    state.selectedOptions.forEach((option) => {
+        if (option.area === 'tools') {
+            baseResponseTime += 0.3;
+            baseAccuracy += 2;
+            baseMonthlyCost += 30;
+        }
+        if (option.area === 'data-sources') {
+            baseAccuracy += 3;
+            baseMonthlyCost += 20;
+        }
+        if (option.level === 'advanced') {
+            baseResponseTime += 0.2;
+            baseAccuracy += 3;
+            baseMonthlyCost += 40;
+        }
+        if (option.level === 'tbd') {
+            baseResponseTime += 0.5;
+            baseMonthlyCost += 100;
+        }
+    });
+
+    document.getElementById('previewResponseTime').textContent = `~${baseResponseTime.toFixed(1)}s`;
+    document.getElementById('previewAccuracy').textContent = `${Math.min(baseAccuracy, 98)}%`;
+    document.getElementById('previewMonthlyCost').textContent = `${baseMonthlyCost} DKK`;
+}
+
+// Update chat welcome message based on config
+function updateChatWelcome() {
+    const chatMessages = document.getElementById('chatMessages');
+    const welcomeMessage = getWelcomeMessage();
+
+    chatMessages.innerHTML = `
+        <div class="message bot">
+            <div class="message-avatar"><i class="fas fa-robot"></i></div>
+            <div class="message-content">
+                <p>${welcomeMessage}</p>
+            </div>
+        </div>
+    `;
+}
+
+function getWelcomeMessage() {
+    const capabilities = [];
+
+    if (state.selectedOptions.has('multimodal')) {
+        capabilities.push('understand and generate images');
+    }
+    if (state.selectedOptions.has('retrieval')) {
+        capabilities.push('search through your documents');
+    }
+    if (state.selectedOptions.has('code-execution')) {
+        capabilities.push('execute code and analyze data');
+    }
+    if (state.selectedOptions.has('custom-tools')) {
+        capabilities.push('use custom tools and APIs');
+    }
+
+    let msg = "Hello! I'm your configured Agent Assistant.";
+
+    if (capabilities.length === 0) {
+        return msg + ' How can I help you today?';
+    }
+
+    if (capabilities.length === 1) {
+        return msg + ` I can ${capabilities[0]}. How can I help you today?`;
+    }
+
+    const last = capabilities.pop();
+    return msg + ` I can ${capabilities.join(', ')}, and ${last}. How can I help you today?`;
 }
 
 // Settings Modal
@@ -344,11 +694,8 @@ function setupSettingsTabs() {
     const tabs = document.querySelectorAll('.settings-tab');
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
-            // Remove active from all tabs and contents
             document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.settings-tab-content').forEach(c => c.classList.remove('active'));
-
-            // Add active to clicked tab and corresponding content
             tab.classList.add('active');
             const tabId = tab.dataset.tab;
             document.getElementById(`tab-${tabId}`).classList.add('active');
@@ -380,6 +727,7 @@ function handleSaveSettings() {
     rebuildAllOptions();
     applyCustomColors();
     updateBasket();
+    updateLivePreview();
     closeSettingsModal();
 }
 
@@ -387,9 +735,9 @@ function resetSettingsToDefault() {
     if (!confirm('This will reset all pricing to defaults. Continue?')) return;
 
     state.settings = {
-        simple: { time: 4, cost: 500 },
-        advanced: { time: 12, cost: 1500 },
-        tbd: { time: 24, cost: 3000 }
+        simple: { time: 40, cost: 50000 },
+        advanced: { time: 80, cost: 100000 },
+        tbd: { time: 160, cost: 200000 }
     };
     updateSettingsInputs();
 }
@@ -400,7 +748,7 @@ function renderOptionsManager() {
     if (!container) return;
 
     let html = '';
-    const areaOrder = ['kb-integrations', 'kb-ingestion', 'system-prompt', 'tools', 'workflow', 'ui-integration'];
+    const areaOrder = ['data-sources', 'tools', 'workflow', 'ui-integration'];
 
     areaOrder.forEach(areaId => {
         const area = CONFIG_DATA.areas[areaId];
@@ -424,17 +772,18 @@ function renderOptionsManager() {
                             <div class="option-info">
                                 <i class="${opt.icon}" style="color: ${color.text}"></i>
                                 <span style="color: ${color.text}">${opt.name}</span>
+                                ${opt.alwaysOn ? '<span class="badge-default" style="margin-left:4px">Default</span>' : ''}
                             </div>
                             <div class="option-meta">
                                 <span class="option-time">${timeCost.time}h</span>
-                                <span class="option-cost">$${timeCost.cost}</span>
+                                <span class="option-cost">${timeCost.cost} DKK</span>
                                 <span class="option-color-preview" style="background: ${color.bg}; border-color: ${color.border}"></span>
                             </div>
                             <div class="option-actions">
                                 <button class="btn-edit-option" onclick="openEditModal('${optId}')" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn-delete-option" onclick="deleteOption('${optId}')" title="Delete">
+                                <button class="btn-delete-option" onclick="deleteOption('${optId}')" title="Delete" ${opt.alwaysOn ? 'disabled style="opacity:0.3"' : ''}>
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -453,7 +802,7 @@ function renderOptionsManager() {
                             <option value="tbd">To Be Decided</option>
                         </select>
                         <input type="number" placeholder="Hours" class="option-time-input" id="time-${areaId}" value="${state.settings.simple.time}">
-                        <input type="number" placeholder="Cost $" class="option-cost-input" id="cost-${areaId}" value="${state.settings.simple.cost}">
+                        <input type="number" placeholder="Cost DKK" class="option-cost-input" id="cost-${areaId}" value="${state.settings.simple.cost}">
                     </div>
                     <div class="form-row color-row">
                         <label>Color:</label>
@@ -731,6 +1080,7 @@ function saveOptionEdit(optionId) {
     rebuildAreaOptions(option.area);
     applyCustomColors();
     updateBasket();
+    updateLivePreview();
     closeEditModal();
 }
 
@@ -738,6 +1088,7 @@ function saveOptionEdit(optionId) {
 function deleteOption(optionId) {
     const option = CONFIG_DATA.options[optionId];
     if (!option) return;
+    if (option.alwaysOn) return;
 
     if (!confirm(`Are you sure you want to delete "${option.name}"?`)) return;
 
@@ -752,6 +1103,7 @@ function deleteOption(optionId) {
     renderOptionsManager();
     rebuildAreaOptions(areaId);
     updateBasket();
+    updateLivePreview();
 }
 
 // Rebuild options for a specific area in the UI
@@ -765,11 +1117,18 @@ function rebuildAreaOptions(areaId) {
 
         container.innerHTML = areaOptions.map(([optId, opt]) => {
             const color = getOptionColor(opt);
+            const labelMap = {
+                'simple-flow': 'Simple',
+                'advanced-flow': 'Reflection',
+                'custom-flow': 'Custom'
+            };
+            const label = labelMap[optId] || opt.name;
             return `
-            <button class="workflow-btn ${state.selectedOptions.has(optId) ? 'selected' : ''}"
+            <button class="workflow-btn ${opt.level} ${state.selectedOptions.has(optId) ? 'selected' : ''}"
                     data-option="${optId}" data-level="${opt.level}" title="${opt.name}"
                     style="background: ${color.bg}; border-color: ${color.border}; color: ${color.text}">
-                <i class="${opt.icon}"></i>
+                <span class="workflow-icon"><i class="${opt.icon}"></i></span>
+                <span class="workflow-label">${label}</span>
             </button>
         `}).join('');
 
@@ -785,11 +1144,12 @@ function rebuildAreaOptions(areaId) {
         container.innerHTML = areaOptions.map(([optId, opt]) => {
             const color = getOptionColor(opt);
             return `
-            <button class="option-btn ${state.selectedOptions.has(optId) ? 'selected' : ''}"
+            <button class="option-btn ${state.selectedOptions.has(optId) ? 'selected' : ''} ${opt.alwaysOn ? 'always-on' : ''}"
                     data-option="${optId}" data-level="${opt.level}"
                     style="background: ${color.bg}; border-color: ${color.border}; color: ${color.text}">
                 <span class="option-icon"><i class="${opt.icon}"></i></span>
                 <span>${opt.name}</span>
+                ${opt.alwaysOn ? '<span class="badge-default">Default</span>' : ''}
             </button>
         `}).join('');
 
@@ -802,152 +1162,11 @@ function rebuildAreaOptions(areaId) {
 
 // Rebuild all options in the UI
 function rebuildAllOptions() {
-    const areas = ['kb-integrations', 'kb-ingestion', 'system-prompt', 'tools', 'workflow', 'ui-integration'];
+    const areas = ['data-sources', 'tools', 'workflow', 'ui-integration'];
     areas.forEach(areaId => rebuildAreaOptions(areaId));
 }
 
-// Preview Modal
-function openPreviewModal() {
-    const modal = document.getElementById('previewModal');
-    modal.classList.add('active');
-
-    updatePreviewCapabilities();
-    updatePreviewConfig();
-    updatePreviewMetrics();
-    setupChatDemo();
-}
-
-function closePreviewModal() {
-    document.getElementById('previewModal').classList.remove('active');
-}
-
-function updatePreviewCapabilities() {
-    const container = document.getElementById('chatCapabilities');
-    const voiceBtn = document.getElementById('voiceBtn');
-    const imageBtn = document.getElementById('imageUploadBtn');
-    const searchBtn = document.getElementById('fileSearchBtn');
-
-    let badges = [];
-
-    // Show/hide action buttons based on selection
-    voiceBtn.style.display = state.selectedOptions.has('speech-to-text') ? 'flex' : 'none';
-    imageBtn.style.display = (state.selectedOptions.has('image-understanding') || state.selectedOptions.has('image-creation')) ? 'flex' : 'none';
-    searchBtn.style.display = (state.selectedOptions.has('simple-rag') || state.selectedOptions.has('custom-rag')) ? 'flex' : 'none';
-
-    // Create capability badges
-    state.selectedOptions.forEach((option) => {
-        if (option.area === 'tools') {
-            badges.push(`<span class="capability-badge"><i class="${option.icon}"></i> ${option.name}</span>`);
-        }
-    });
-
-    container.innerHTML = badges.join('');
-}
-
-function updatePreviewConfig() {
-    const container = document.getElementById('previewConfig');
-
-    // Group by area
-    const grouped = {};
-    state.selectedOptions.forEach((option) => {
-        const areaKey = option.area;
-        if (!grouped[areaKey]) grouped[areaKey] = [];
-        grouped[areaKey].push(option);
-    });
-
-    let html = '';
-    for (const [, options] of Object.entries(grouped)) {
-        options.forEach(opt => {
-            html += `
-                <div class="preview-config-item">
-                    <i class="${opt.icon}"></i>
-                    <span>${opt.name}</span>
-                </div>
-            `;
-        });
-    }
-
-    container.innerHTML = html || '<p style="color: var(--text-muted); font-size: 0.8125rem;">No options selected</p>';
-}
-
-function updatePreviewMetrics() {
-    // Calculate estimated metrics based on configuration
-    let baseResponseTime = 1.0;
-    let baseAccuracy = 80;
-    let baseMonthlyCost = 100;
-
-    state.selectedOptions.forEach((option) => {
-        // Adjust metrics based on options
-        if (option.area === 'tools') {
-            baseResponseTime += 0.3;
-            baseAccuracy += 2;
-            baseMonthlyCost += 30;
-        }
-        if (option.area === 'kb-ingestion') {
-            baseAccuracy += 5;
-            baseMonthlyCost += 50;
-        }
-        if (option.level === 'advanced') {
-            baseResponseTime += 0.2;
-            baseAccuracy += 3;
-            baseMonthlyCost += 40;
-        }
-        if (option.level === 'tbd') {
-            baseResponseTime += 0.5;
-            baseMonthlyCost += 100;
-        }
-    });
-
-    document.getElementById('previewResponseTime').textContent = `~${baseResponseTime.toFixed(1)}s`;
-    document.getElementById('previewAccuracy').textContent = `${Math.min(baseAccuracy, 98)}%`;
-    document.getElementById('previewMonthlyCost').textContent = `${baseMonthlyCost} DKK`;
-}
-
-function setupChatDemo() {
-    const chatMessages = document.getElementById('chatMessages');
-
-    // Reset chat with welcome message
-    chatMessages.innerHTML = `
-        <div class="message bot">
-            <div class="message-avatar"><i class="fas fa-robot"></i></div>
-            <div class="message-content">
-                <p>Hello! I'm your configured Agent Building Assistant. ${getWelcomeMessage()}</p>
-            </div>
-        </div>
-    `;
-}
-
-function getWelcomeMessage() {
-    const capabilities = [];
-
-    if (state.selectedOptions.has('image-understanding')) {
-        capabilities.push('understand images');
-    }
-    if (state.selectedOptions.has('image-creation')) {
-        capabilities.push('create images');
-    }
-    if (state.selectedOptions.has('speech-to-text')) {
-        capabilities.push('process voice input');
-    }
-    if (state.selectedOptions.has('simple-rag') || state.selectedOptions.has('custom-rag')) {
-        capabilities.push('search through your documents');
-    }
-    if (state.selectedOptions.has('code-execution')) {
-        capabilities.push('execute code and analyze data');
-    }
-
-    if (capabilities.length === 0) {
-        return 'How can I help you today?';
-    }
-
-    if (capabilities.length === 1) {
-        return `I can ${capabilities[0]}. How can I help you today?`;
-    }
-
-    const last = capabilities.pop();
-    return `I can ${capabilities.join(', ')}, and ${last}. How can I help you today?`;
-}
-
+// Send demo message
 function sendDemoMessage() {
     const input = document.getElementById('chatInput');
     const message = input.value.trim();
@@ -989,72 +1208,57 @@ function generateDemoResponse(message) {
     const lowerMessage = message.toLowerCase();
 
     // Demo responses based on capabilities
-    if (lowerMessage.includes('image') && state.selectedOptions.has('image-creation')) {
-        return `<p>I'd be happy to create an image for you! Here's a demo visualization:</p>
-                <img src="https://picsum.photos/200/150" alt="Generated image demo">
-                <p><em>(This is a demo - in production, I would generate a custom image based on your request)</em></p>`;
+    if (lowerMessage.includes('image') && state.selectedOptions.has('multimodal')) {
+        return `<p>I'd be happy to help with images! With multimodal capabilities enabled, I can:</p>
+                <ul style="margin: 8px 0; padding-left: 20px; font-size: 0.8rem;">
+                    <li>Analyze and understand images you share</li>
+                    <li>Generate images based on descriptions</li>
+                    <li>Extract text from images</li>
+                </ul>
+                <p><em>(Demo response)</em></p>`;
     }
 
-    if ((lowerMessage.includes('search') || lowerMessage.includes('find')) &&
-        (state.selectedOptions.has('simple-rag') || state.selectedOptions.has('custom-rag'))) {
-        return `<p>I searched through your knowledge base and found 3 relevant documents:</p>
-                <p>📄 <strong>Document_A.pdf</strong> - 95% relevance<br>
-                📄 <strong>Report_2024.docx</strong> - 87% relevance<br>
-                📄 <strong>Guidelines.pdf</strong> - 72% relevance</p>
-                <p><em>(This is a demo response)</em></p>`;
+    if ((lowerMessage.includes('search') || lowerMessage.includes('find') || lowerMessage.includes('document')) &&
+        state.selectedOptions.has('retrieval')) {
+        return `<p>I searched through your knowledge base and found relevant results:</p>
+                <p style="background: rgba(99,102,241,0.1); padding: 8px; border-radius: 6px; margin: 8px 0; font-size: 0.75rem;">
+                    <strong>3 documents found</strong><br>
+                    Document_A.pdf - 95% relevance<br>
+                    Report_2024.docx - 87% relevance<br>
+                    Guidelines.pdf - 72% relevance
+                </p>
+                <p><em>(Demo response)</em></p>`;
     }
 
     if ((lowerMessage.includes('code') || lowerMessage.includes('data') || lowerMessage.includes('analyze')) &&
         state.selectedOptions.has('code-execution')) {
-        return `<p>I can help with that! Here's a sample analysis:</p>
-                <pre style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-size: 0.8rem; overflow-x: auto;">
-import pandas as pd
-data = pd.read_csv('data.csv')
-print(data.describe())
-
-# Output:
-# count: 1000
-# mean: 45.2
-# std: 12.8
+        return `<p>I can help analyze that data! Here's a sample output:</p>
+                <pre style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; font-size: 0.7rem; overflow-x: auto; margin: 8px 0;">
+data = analyze(input)
+# Results:
+# - Total records: 1,234
+# - Average value: 45.2
+# - Trend: Increasing (+12%)
                 </pre>
-                <p><em>(This is a demo - in production, I would execute real code)</em></p>`;
+                <p><em>(Demo response)</em></p>`;
     }
 
     // Default response
     const responses = [
-        "I understand your request. Based on my configuration, I can assist you with that. Let me process this information.",
-        "Thank you for your message! I'm here to help. This demo shows how I would interact based on your selected configuration.",
-        "Great question! In a production environment, I would leverage the configured capabilities to provide you with a comprehensive response.",
-        "I've received your message. My capabilities allow me to handle various types of requests based on your configuration."
+        "I understand your request. Based on my configuration, I can assist you with that.",
+        "Thank you for your message! I'm here to help with your questions.",
+        "Great question! Let me help you with that based on my current capabilities.",
+        "I've received your message and I'm ready to assist."
     ];
 
     return `<p>${responses[Math.floor(Math.random() * responses.length)]}</p>
-            <p><em>(This is a demo response - actual responses would be based on your knowledge base and configuration)</em></p>`;
+            <p><em>(Demo response - actual responses depend on your configuration)</em></p>`;
 }
 
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
-}
-
-// Mobile basket toggle
-function addMobileBasketToggle() {
-    const toggle = document.createElement('button');
-    toggle.className = 'basket-toggle';
-    toggle.innerHTML = '<i class="fas fa-shopping-cart"></i><span class="badge">0</span>';
-    toggle.addEventListener('click', () => {
-        document.querySelector('.basket-panel').classList.toggle('active');
-    });
-    document.body.appendChild(toggle);
-}
-
-function updateMobileBasketBadge(count) {
-    const badge = document.querySelector('.basket-toggle .badge');
-    if (badge) {
-        badge.textContent = count;
-        badge.style.display = count > 0 ? 'flex' : 'none';
-    }
 }
 
 // Initialize on DOM ready
