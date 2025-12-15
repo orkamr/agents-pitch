@@ -1,4 +1,4 @@
-// Default color presets
+// Default color presets 
 const COLOR_PRESETS = {
     simple: { bg: '#fef08a', border: '#eab308', text: '#854d0e' },
     advanced: { bg: '#fed7aa', border: '#f97316', text: '#9a3412' },
